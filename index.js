@@ -188,7 +188,7 @@
             mark_line_content.innerText = content;
 
             mark_line.style = 'display: block;text-decoration: none;border: none;line-height: 1.8rem;';
-            mark_line_del_bnt.style = 'float: left; margin-right: 1rem; width: 1rem; text-align: center; cursor: pointer;';
+            mark_line_del_bnt.style = 'float: left; margin-right: 1rem; width: 1rem; text-align: right; cursor: pointer;';
             mark_line_number.style = 'display: inline-block;text-align: left;width: 5ex;color: blue;';
             mark_line_content.style = 'margin-left: 0.5rem;';
 
@@ -221,11 +221,18 @@
         function gen_mark_list_view_file(block, marks) {
             let file_block = document.createElement('div');
             let file_block_title = document.createElement('div');
+            let file_block_del_bnt = document.createElement('span');
+            let file_block_title_bnt = document.createElement('span');
             let unfold = !('unfold' in marks.status) || (marks.status.unfold == true);
             file_block.setAttribute('block', block);
-            file_block_title.innerHTML = block.replace('.html', '').slice(1);
+            file_block_title_bnt.innerText = block.replace('.html', '').slice(1);
+            file_block_del_bnt.innerText = '-';
+            file_block_del_bnt.style = 'float: left; margin-right: 0.1rem; width: 1rem; text-align: left; cursor: pointer;';
+            file_block_title.appendChild(file_block_del_bnt);
+            file_block_title.appendChild(file_block_title_bnt);
             file_block_title.style = 'cursor: pointer;';
-            file_block_title.onclick = on_block_fold_unfold;
+            file_block_title_bnt.onclick = on_block_fold_unfold;
+            file_block_del_bnt.onclick = delete_block;
             file_block.appendChild(file_block_title);
 
             function draw_block_lines() {
@@ -246,6 +253,11 @@
                     draw_block_lines();
                 }
                 book_marks[block].status.unfold = !unfold;
+                store_marks();
+            }
+            function delete_block() {
+                file_block.remove();
+                delete book_marks[block];
                 store_marks();
             }
 
